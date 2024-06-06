@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Listes et grilles tuto'),
+      home: const MyHomePage(title: 'Listes et Grilles tuto'),
     );
   }
 }
@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "Nutella",
     "Viande",
     "Poisson",
-    "Papier toilette"
+    "Papier toilette",
     "liquide lave linge",
     "chlore",
     "Sauce salade",
@@ -61,22 +61,24 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> itemCourses() {
     List<Widget> items = [];
     courses.forEach((element) {
-      final widget = Padding(
-        padding: EdgeInsets.all(10),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(element),
-            const Icon(Icons.check_box_outline_blank)
-          ],
-        ) ,
-      );
-
-
+      final widget = elementToShow(element);
       items.add(widget);
     });
     return items;
+   }
+
+   Widget elementToShow(String element) {
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(element),
+          const Icon(Icons.check_box_outline_blank)
+        ],
+      ) ,
+    );
    }
 
   @override
@@ -88,13 +90,23 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: itemCourses(),
-          ),
-        ),
-      ),
+      body: ListView.separated(
+          itemBuilder: (BuildContext context, int index) {
+            return elementToShow(courses[index]);
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return const Divider();
+          },
+          itemCount: courses.length
+      )
+
+      // ListView.builder(
+      //   itemCount: courses.length,
+      //     itemBuilder: (BuildContext context, int index) {
+      //       final element = courses[index];
+      //       return elementToShow(element);
+      //     }
+      // ),
     );
   }
 }
