@@ -35,6 +35,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  @override
+  initState() {
+    super.initState();
+    maListeDeCourses = listeDeCourses();
+  }
+
   List<String> courses = [
     "Carottes",
     "Tomates",
@@ -46,8 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "Viande",
     "Poisson",
     "Papier toilette",
-    "liquide lave linge",
-    "chlore",
+    "Liquide lave linge",
     "Sauce salade",
     "Huile d'olive",
     "Dentifrice",
@@ -61,13 +66,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Course> maListeDeCourses = [];
 
-  List<Widget> itemCourses() {
-    List<Widget> items = [];
+
+  List<Course> listeDeCourses() {
+    List<Course> c = [];
     courses.forEach((element) {
-      final widget = elementToShow(element);
-      items.add(widget);
+      c.add(Course(element));
     });
-    return items;
+    return c;
    }
 
    Widget elementToShow(String element) {
@@ -87,9 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
-    courses.forEach((element) {
-      maListeDeCourses.add(Course(element));
-    });
+
 
     return Scaffold(
       appBar: AppBar(
@@ -98,38 +101,54 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: ListView.separated(
           itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-              title: Text(courses[index]),
-              leading: Text(index.toString()),
-              trailing:
-                  IconButton(onPressed: () {
-                      setState(() {
-                        maListeDeCourses[index].update();
-                      });
-                  },
-                  icon: Icon((maListeDeCourses[index].bought)
-                      ? Icons.check_box
-                      : Icons.check_box_outline_blank
-                  ),
-                  ),
-                onTap: () {
-
-                },
+            return Dismissible(
+                key: Key(maListeDeCourses[index].element),
+                child: tile(index),
+              direction: DismissDirection.endToStart,
+              onDismissed: (direction) {
+                  setState(() {
+                    maListeDeCourses.removeAt(index);
+                  });
+              },
+              background: Container(
+                margin: EdgeInsets.only(right: 8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Spacer(),
+                    Text("Swipe pour supprimer")
+                  ],
+                ),
+                color: Colors.redAccent
+              ),
             );
           },
           separatorBuilder: (BuildContext context, int index) {
             return const Divider(color: Colors.deepOrangeAccent, thickness: 1,);
           },
-          itemCount: courses.length
+          itemCount: maListeDeCourses.length
       )
+    );
+  }
 
-      // ListView.builder(
-      //   itemCount: courses.length,
-      //     itemBuilder: (BuildContext context, int index) {
-      //       final element = courses[index];
-      //       return elementToShow(element);
-      //     }
-      // ),
+  ListTile tile(int index) {
+    return ListTile(
+      title: Text(maListeDeCourses[index].element),
+      leading: Text(index.toString()),
+      trailing:
+      IconButton(onPressed: () {
+        setState(() {
+          maListeDeCourses[index].update();
+        });
+      },
+        icon: Icon((maListeDeCourses[index].bought)
+            ? Icons.check_box
+            : Icons.check_box_outline_blank
+        ),
+      ),
+      onTap: () {
+
+      },
     );
   }
 }
