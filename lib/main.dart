@@ -85,17 +85,22 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        backgroundColor: Colors.deepOrangeAccent,
+        title: Text(widget.title, style: const TextStyle(color: Colors.white),),
       ),
       body: ListView.separated(
           itemBuilder: (BuildContext context, int index) {
-            return elementToShow(courses[index]);
+            return ListTile(
+              title: Text(courses[index]),
+              leading: Text(index.toString()),
+              trailing: const Icon(Icons.check_box_outline_blank),
+              onTap: () {
+                print("J'ai appuyé sur l'élément $index qui correspont à ${courses[index]}");
+              },
+            );
           },
           separatorBuilder: (BuildContext context, int index) {
-            return const Divider();
+            return const Divider(color: Colors.deepOrangeAccent, thickness: 1,);
           },
           itemCount: courses.length
       )
