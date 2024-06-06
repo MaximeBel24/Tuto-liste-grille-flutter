@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -58,6 +59,8 @@ class _MyHomePageState extends State<MyHomePage> {
     "Noix de coco en poudre"
   ];
 
+  List<Course> maListeDeCourses = [];
+
   List<Widget> itemCourses() {
     List<Widget> items = [];
     courses.forEach((element) {
@@ -83,6 +86,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    courses.forEach((element) {
+      maListeDeCourses.add(Course(element));
+    });
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrangeAccent,
@@ -93,10 +101,20 @@ class _MyHomePageState extends State<MyHomePage> {
             return ListTile(
               title: Text(courses[index]),
               leading: Text(index.toString()),
-              trailing: const Icon(Icons.check_box_outline_blank),
-              onTap: () {
-                print("J'ai appuyé sur l'élément $index qui correspont à ${courses[index]}");
-              },
+              trailing:
+                  IconButton(onPressed: () {
+                      setState(() {
+                        maListeDeCourses[index].update();
+                      });
+                  },
+                  icon: Icon((maListeDeCourses[index].bought)
+                      ? Icons.check_box
+                      : Icons.check_box_outline_blank
+                  ),
+                  ),
+                onTap: () {
+
+                },
             );
           },
           separatorBuilder: (BuildContext context, int index) {
@@ -113,5 +131,16 @@ class _MyHomePageState extends State<MyHomePage> {
       //     }
       // ),
     );
+  }
+}
+
+class Course {
+  String element;
+  bool bought = false;
+
+  Course(this.element);
+
+  update() {
+    bought = !bought;
   }
 }
