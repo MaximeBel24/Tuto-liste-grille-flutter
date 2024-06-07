@@ -100,13 +100,21 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title, style: const TextStyle(color: Colors.white),),
       ),
       body: GridView.builder(
-          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: MediaQuery.of(context).size.width / 3),
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: MediaQuery.of(context).size.width / 2),
           // const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
           itemBuilder: (BuildContext context, int index) {
-            return Card(
-              child: Center(
-                child: Text(maListeDeCourses[index].element),
+            return InkWell(
+              child: Card(
+                color: (maListeDeCourses[index].bought ? Colors.green : Colors.deepOrangeAccent),
+                child: Center(
+                  child: Text(maListeDeCourses[index].element, style: TextStyle(color: Colors.white),),
+                ),
               ),
+              onTap: () {
+                setState(() {
+                  maListeDeCourses[index].update();
+                });
+              },
             );
           },
         itemCount: maListeDeCourses.length,
