@@ -92,43 +92,91 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
-
+    final orientation = MediaQuery.of(context).orientation;
+    print(orientation);
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrangeAccent,
         title: Text(widget.title, style: const TextStyle(color: Colors.white),),
       ),
-      body: GridView.builder(
-          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: MediaQuery.of(context).size.width / 2),
-          // const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-          itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-              child: Card(
-                color: (maListeDeCourses[index].bought ? Colors.green : Colors.deepOrangeAccent),
-                child: Center(
-                  child: Text(maListeDeCourses[index].element, style: TextStyle(color: Colors.white),),
-                ),
-              ),
-              onTap: () {
-                setState(() {
-                  maListeDeCourses[index].update();
-                });
-              },
-            );
-          },
-        itemCount: maListeDeCourses.length,
-      ),
+      body: (orientation == Orientation.portrait)
+        ? listSeparated()
+          : grid()
+    );
+  }
 
+  Widget grid() {
+    return   GridView.builder(
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: MediaQuery.of(context).size.width / 4),
+      // const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+      itemBuilder: (BuildContext context, int index) {
+        return InkWell(
+          child: Card(
+            color: (maListeDeCourses[index].bought ? Colors.green : Colors.deepOrangeAccent),
+            child: Center(
+              child: Text(maListeDeCourses[index].element, style: TextStyle(color: Colors.white),),
+            ),
+          ),
+          onTap: () {
+            setState(() {
+              maListeDeCourses[index].update();
+            });
+          },
+        );
+      },
+      itemCount: maListeDeCourses.length,
+    );
+  }
+
+  Widget listSeparated() {
+    return ListView.separated(
+        itemBuilder: (BuildContext context, int index) {
+          return Dismissible(
+            key: Key(maListeDeCourses[index].element),
+            direction: DismissDirection.endToStart,
+            onDismissed: (direction) {
+              setState(() {
+                maListeDeCourses.removeAt(index);
+              });
+            },
+            background: Container(
+                padding: const EdgeInsets.only(right: 15),
+                color: Colors.redAccent,
+                // margin: EdgeInsets.only(right: 15),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Spacer(),
+                    Text("Swipe pour supprimer",style: TextStyle(color: Colors.white),)
+                  ],
+                )
+            ),
+            child: tile(index),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return const Divider(color: Colors.deepOrangeAccent, thickness: 1,);
+        },
+        itemCount: maListeDeCourses.length
+    );
+  }
+
+  Widget simpleList() {
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) {
+        final element = courses[index];
+        return elementToShow(element);
+      },
+      itemCount: courses.length,
     );
   }
 
   ListTile tile(int index) {
     return ListTile(
       title: Text(maListeDeCourses[index].element),
-      leading: Text(index.toString()),
-      trailing:
-      IconButton(onPressed: () {
+      leading: Text((index + 1).toString()),
+      trailing: IconButton(onPressed: () {
         setState(() {
           maListeDeCourses[index].update();
         });
@@ -154,35 +202,4 @@ class Course {
   update() {
     bought = !bought;
   }
-
-// body: ListView.separated(
-//     itemBuilder: (BuildContext context, int index) {
-//       return Dismissible(
-//           key: Key(maListeDeCourses[index].element),
-//           child: tile(index),
-//         direction: DismissDirection.endToStart,
-//         onDismissed: (direction) {
-//             setState(() {
-//               maListeDeCourses.removeAt(index);
-//             });
-//         },
-//         background: Container(
-//           padding: EdgeInsets.only(right: 15),
-//           // margin: EdgeInsets.only(right: 15),
-//           child: Row(
-//             mainAxisSize: MainAxisSize.max,
-//             children: [
-//               Spacer(),
-//               Text("Swipe pour supprimer",style: TextStyle(color: Colors.white),)
-//             ],
-//           ),
-//           color: Colors.redAccent
-//         ),
-//       );
-//     },
-//     separatorBuilder: (BuildContext context, int index) {
-//       return const Divider(color: Colors.deepOrangeAccent, thickness: 1,);
-//     },
-//     itemCount: maListeDeCourses.length
-// )
 }
