@@ -99,35 +99,19 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.deepOrangeAccent,
         title: Text(widget.title, style: const TextStyle(color: Colors.white),),
       ),
-      body: ListView.separated(
+      body: GridView.builder(
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: MediaQuery.of(context).size.width / 3),
+          // const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
           itemBuilder: (BuildContext context, int index) {
-            return Dismissible(
-                key: Key(maListeDeCourses[index].element),
-                child: tile(index),
-              direction: DismissDirection.endToStart,
-              onDismissed: (direction) {
-                  setState(() {
-                    maListeDeCourses.removeAt(index);
-                  });
-              },
-              background: Container(
-                margin: EdgeInsets.only(right: 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Spacer(),
-                    Text("Swipe pour supprimer")
-                  ],
-                ),
-                color: Colors.redAccent
+            return Card(
+              child: Center(
+                child: Text(maListeDeCourses[index].element),
               ),
             );
           },
-          separatorBuilder: (BuildContext context, int index) {
-            return const Divider(color: Colors.deepOrangeAccent, thickness: 1,);
-          },
-          itemCount: maListeDeCourses.length
-      )
+        itemCount: maListeDeCourses.length,
+      ),
+
     );
   }
 
@@ -162,4 +146,35 @@ class Course {
   update() {
     bought = !bought;
   }
+
+// body: ListView.separated(
+//     itemBuilder: (BuildContext context, int index) {
+//       return Dismissible(
+//           key: Key(maListeDeCourses[index].element),
+//           child: tile(index),
+//         direction: DismissDirection.endToStart,
+//         onDismissed: (direction) {
+//             setState(() {
+//               maListeDeCourses.removeAt(index);
+//             });
+//         },
+//         background: Container(
+//           padding: EdgeInsets.only(right: 15),
+//           // margin: EdgeInsets.only(right: 15),
+//           child: Row(
+//             mainAxisSize: MainAxisSize.max,
+//             children: [
+//               Spacer(),
+//               Text("Swipe pour supprimer",style: TextStyle(color: Colors.white),)
+//             ],
+//           ),
+//           color: Colors.redAccent
+//         ),
+//       );
+//     },
+//     separatorBuilder: (BuildContext context, int index) {
+//       return const Divider(color: Colors.deepOrangeAccent, thickness: 1,);
+//     },
+//     itemCount: maListeDeCourses.length
+// )
 }
